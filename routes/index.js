@@ -1,7 +1,7 @@
 const route = require('express').Router();
-route.get('/', (req, res) => {
-    res.send("Ecommerce");
-});
+const userController = require('../controllers/userController');
+
+route.get('users/profile', userController.userProfileController);
 
 
 
