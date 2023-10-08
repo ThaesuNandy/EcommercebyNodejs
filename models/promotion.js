@@ -13,6 +13,8 @@ const promotionSchema = new mongoose.Schema({
    
  
     
+},{
+    timestamps : true
 });
 
 module.exports = mongoose.model("promotion", promotionSchema);

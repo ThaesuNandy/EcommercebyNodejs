@@ -1,69 +1,77 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const userModel = require("../models/user");
 const addressModel = require("../models/address");
+const generateJWT = require('../util/generateJwt');
 
 exports.signupController = async (req, res) => {
- try{
+  try {
     const {
-        name,
-        email,
-        password,
-        phone,
-        role,
-        floor,
-        street,
-        region,
-        city,
-        township,
-      } = req.body;
+      name,
+      email,
+      password,
+      phone,
+      role,
+      floor,
+      street,
+      region,
+      city,
+      township,
+      tag,
+    } = req.body;
+    let newAddress;
+    if (role === "customer") {
       const newAddress = await addressModel.create({
         floor,
         street,
         region,
         city,
         township,
+        tag,
       });
-    
-     const hashedPassword =  bcrypt.hashSync(password, 10);
-     const newUser = await userModel.create({
-        name,
-        email,
-        password : hashedPassword,
-        phone,
-        role,
-        addressId : newAddress._id,
-      });
+    }
 
-      const token = jwt.sign({ _id : newUser._id }, "E-Commerce Website");
-      return res.json({ msg : "Successfully created.", token });
- } catch (error) {
-    console.log(error);
- }
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const newUser = await userModel.create({
+      name,
+      email,
+      password: hashedPassword,
+      phone,
+      role,
+      addressId: role === "customer" ? newAddress._id : undefined,
+    });
+
+   const token = generateJWT(newUser._id);
+   
+   return res.json({ msg: "Successfully created.", token });
+  } catch (error) {
+    return res.status(400).json({
+      msg: error.message,
+    });
+  }
 };
 
 exports.signinController = async (req, res) => {
-    try {
-        const { email, password } = req.body;
-        const user = await userModel.findOne({ email : email});
-       if(!user) {
-        return res.status(404).json({
-            msg : "User not found",
-        })
-       }
-        const isMatch =  bcrypt.compareSync(password, user.password );
-        if(isMatch){
-            const token = jwt.sign({ _id: user._id }, "E-Commerce Website");
-            return res.status(200).json({
-                token,
-            });
-        }else {
-            return res.status(400).json({
-                msg : "Password doesn't match",
-            });
-        }
-    } catch (error) {
-        console.log(error);
-    
+  try {
+    const { email, password } = req.body;
+    const user = await userModel.findOne({ email: email });
+    if (!user) {
+      return res.status(404).json({
+        msg: "User not found",
+      });
     }
+    const isMatch = bcrypt.compareSync(password, user.password);
+    if (isMatch) {
+        const token = generateJWT(user._id);
+      return res.status(200).json({
+        token,
+      });
+    } else {
+      return res.status(400).json({
+        msg: "Password doesn't match",
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };

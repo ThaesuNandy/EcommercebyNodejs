@@ -2,19 +2,29 @@ const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
     type : {
-        type : String
+        type : String,
+        required : true
     },
     image : {
-        type : String
+        type : Buffer,
+        required: true,
+    },
+    mimetype : {
+        type : String,
+        required: true,
     },
     accountName : {
-        type : String
+        type : String,
+        required : true
     },
     accountNumber : {
-        type : String
+        type : String,
+        required : true
     },
  
     
+},{
+    timestamps : true,
 });
 
 module.exports = mongoose.model("payment", paymentSchema);
