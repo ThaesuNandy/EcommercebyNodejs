@@ -26,6 +26,10 @@ const productSchema = new mongoose.Schema(
     discountPrice: {
       type: Number,
     },
+    rating : {
+      type : Number,
+      default : 0,
+    },
     review: [
       {
         type: mongoose.Schema.Types.ObjectId,

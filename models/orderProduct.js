@@ -14,6 +14,10 @@ const orderProductSchema = new mongoose.Schema({
     totalPrice : {
         type : Number
     },
+    order : {
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "order",
+    }
  
     
 },

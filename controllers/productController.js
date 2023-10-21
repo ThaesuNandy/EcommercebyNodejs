@@ -127,3 +127,20 @@ exports.deleteProduct = async (req, res) => {
     });
   }
 };
+
+exports.fetchDiscountProducts = async (req, res) => {
+  try {
+    const discountProducts = await productModel.find({
+      discountPrice : {
+        $gt : 0
+      }
+    })
+    return res.status(200).json({
+      discountProducts
+    })
+  } catch (error) {
+    return res.status(400).json({
+      msg: error.message,
+    });
+  }
+}

@@ -1,22 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const notificationSchema = new mongoose.Schema({
-    title : {
-        type : String
+const notificationSchema = new mongoose.Schema(
+  {
+    title: {
+      type: String,
     },
-    image : {
-        type : String
+    image: {
+      type: Buffer,
     },
-    type : {
-        type : Number
+    mimetype: {
+      type: String,
     },
-    referenceId : {
-        type : Number
+    type: {
+      type: String,
+      enum: ["discount", "order"],
     },
- 
-    
-},{
-    timestamps : true
-});
+    reference: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "order",
+      default : null,
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
 
 module.exports = mongoose.model("notification", notificationSchema);

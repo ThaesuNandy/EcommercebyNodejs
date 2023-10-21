@@ -1,11 +1,11 @@
 const mongoose = require('mongoose');
 
 const reviewSchema = new mongoose.Schema({
-    text : {
+    content : {
         type : String
     },
     rating : {
-        type : String
+        type : Number,
     },
     user : {
         type : mongoose.Schema.Types.ObjectId,
