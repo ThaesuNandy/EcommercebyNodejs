@@ -1,11 +1,19 @@
 const path = require("path");
 const fs = require("fs");
 const { upload } = require("../util/file");
-const notificationModel = require("../models/notificaiton");
+const { notificationModel } = require("../models");
+const { validationResult } = require("express-validator");
 
 exports.createNotification = async (req, res) => {
   try {
     upload(req, res, async (err) => {
+      const error = validationResult(req);
+      if (!error.isEmpty()) {
+        return res.status(400).json({
+          msg: error.array().map((m) => m.msg),
+        });
+      }
+      
       if (err) {
         return res.status(400).json({
           error: err.message,

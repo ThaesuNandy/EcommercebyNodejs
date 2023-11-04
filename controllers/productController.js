@@ -1,13 +1,22 @@
 const fs = require("fs");
 const path = require("path");
 
-const productModel = require("../models/product");
 const { upload } = require("../util/file");
-const product = require("../models/product");
+const { productModel } = require("../models");
+const { validationResult } = require("express-validator"); 
 
 exports.createProductController = async (req, res) => {
   try {
+   
+
     upload(req, res, async (err) => {
+      const error = validationResult(req);
+      if(!error.isEmpty()) {
+        return res.status(400).json({
+          msg : error.array().map((m) => m.msg),
+        })
+      }
+      
       const { name, description, category, quantity, price, discountPrice } =
         req.body;
       const image = fs.readFileSync(

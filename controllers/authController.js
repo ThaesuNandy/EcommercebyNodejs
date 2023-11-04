@@ -1,11 +1,18 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const userModel = require("../models/user");
-const addressModel = require("../models/address");
+const { validationResult } = require("express-validator");
+const {userModel, addressModel } = require("../models");
 const generateJWT = require('../util/generateJwt');
 
 exports.signupController = async (req, res) => {
   try {
+    const error = validationResult(req);
+    if(!error.isEmpty()) {
+      return res.status(400).json({
+        msg : error.array().map((m) => m.msg),
+      })
+    }
+    
     const {
       name,
       email,
@@ -53,6 +60,14 @@ exports.signupController = async (req, res) => {
 
 exports.signinController = async (req, res) => {
   try {
+
+    const error = validationResult(req);
+    if(!error.isEmpty()) {
+      return res.status(400).json({
+        msg : error.array().map((m) => m.msg),
+      })
+    }
+
     const { email, password } = req.body;
     const user = await userModel.findOne({ email: email });
     if (!user) {

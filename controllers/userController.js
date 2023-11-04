@@ -1,6 +1,5 @@
 const {ObjectId} = require("mongodb");
-const userModel = require("../models/user");
-const addressModel = require("../models/address");
+const { userModel, addressModel } = require("../models");
 const bcrypt = require("bcrypt");
 
 exports.userProfileController = async (req, res) => {

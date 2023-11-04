@@ -1,8 +1,14 @@
-const orderModel = require("../models/order");
-const orderedProductsModel = require("../models/orderProduct");
+const { orderProductModel, orderModel } = require("../models");
+const { validationResult } = require("express-validator");
 
 exports.createOrderController = async (req, res) => {
   try {
+    const error = validationResult(req);
+    if (!error.isEmpty()) {
+      return res.status(400).json({
+        msg: error.array().map((m) => m.msg),
+      });
+    }
     const { orderedProducts, paymentId } = req.body;
     const products = JSON.parse(orderedProducts);
 
@@ -114,4 +120,3 @@ exports.updateOrder = async (req, res) => {
     });
   }
 };
-
